@@ -9,6 +9,7 @@ import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApi
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApiImpl
 import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
+import com.pratama.kmmcurrency.domain.usecase.CalculateExchangeRate
 import com.pratama.kmmcurrency.domain.usecase.GetCurrencies
 import com.pratama.kmmcurrency.domain.usecase.GetExchangeRates
 import com.pratama.kmmcurrency.getPlatform
@@ -57,6 +58,7 @@ val openExchangeModule = module {
     // usecase
     single { GetCurrencies(repo = get()) }
     single { GetExchangeRates(repo = get()) }
+    single { CalculateExchangeRate(repo = get()) }
 }
 
 fun setupHttpClient(

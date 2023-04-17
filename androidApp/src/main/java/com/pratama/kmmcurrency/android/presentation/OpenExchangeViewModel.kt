@@ -4,13 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pratama.kmmcurrency.domain.entity.Currency
+import com.pratama.kmmcurrency.domain.usecase.CalculateExchangeRate
 import com.pratama.kmmcurrency.domain.usecase.GetCurrencies
 import com.pratama.kmmcurrency.domain.usecase.GetExchangeRates
 import kotlinx.coroutines.launch
 
 class OpenExchangeViewModel(
     private val getCurrencies: GetCurrencies,
-    private val getExchangeRates: GetExchangeRates
+    private val getExchangeRates: GetExchangeRates,
+    private val calculateRates: CalculateExchangeRate
 ) : ViewModel() {
 
     sealed class OpenExchangeState {
@@ -23,7 +25,8 @@ class OpenExchangeViewModel(
 
     init {
         viewModelScope.launch {
-            val data = getCurrencies.invoke(shouldFetch = true)
+            val data = getCurrencies.invoke(shouldFetch = false)
+            getExchangeRates.invoke()
 
             if (data.isSuccess) {
                 data.getOrNull()?.let {
@@ -38,12 +41,11 @@ class OpenExchangeViewModel(
 
     fun getExchangeRate(symbol: String, amount: Double) {
         viewModelScope.launch {
-            val param = GetExchangeRates.Param(
-                shouldFetch = true,
-                symbol = symbol,
+            val param = CalculateExchangeRate.Param(
+                from = symbol,
                 amount = amount
             )
-            val data = getExchangeRates.invoke(param)
+            val result = calculateRates.invoke(param)
         }
     }
 }

@@ -6,5 +6,11 @@ import org.koin.dsl.module
 
 
 val vmModule = module {
-    viewModel { OpenExchangeViewModel(getCurrencies = get(), getExchangeRates = get()) }
+    viewModel {
+        OpenExchangeViewModel(
+            getCurrencies = get(),
+            getExchangeRates = get(),
+            calculateRates = get()
+        )
+    }
 }

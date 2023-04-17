@@ -5,6 +5,5 @@ import com.pratama.kmmcurrency.domain.entity.Rate
 interface RateDao {
     fun getRates(): List<Rate>
     fun insertRates(rates: List<Rate>)
-
-    fun getRateBySymbol(symbol: String): Rate?
+    fun getRateBySymbol(symbol: String): Rate
 }

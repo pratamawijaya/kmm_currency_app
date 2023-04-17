@@ -46,6 +46,11 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
 
                     currencyDropDown.setAdapter(adapter)
 
+                    openExchangeViewModel.getExchangeRate(
+                        symbol = adapter.getItem(0)?.symbol ?: "",
+                        amount = inputAmount.text.toString().toDouble()
+                    )
+
                 }
                 else -> {
 

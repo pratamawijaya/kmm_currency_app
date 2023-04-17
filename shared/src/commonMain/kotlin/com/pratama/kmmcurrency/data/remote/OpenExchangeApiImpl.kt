@@ -18,6 +18,10 @@ class OpenExchangeApiImpl(
     private val appId: String
 ) : OpenExchangeApi {
 
+    init {
+        Logger.setTag("pratama-debug-${this::class.simpleName}")
+    }
+
     override suspend fun getCurrencies(): Result<List<Currency>> {
         Logger.d { "trying get currency" }
         val response = httpClient.safeRequest<Map<String, String>, String> {

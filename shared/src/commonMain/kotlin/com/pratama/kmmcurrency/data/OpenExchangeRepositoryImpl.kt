@@ -5,6 +5,7 @@ import com.pratama.kmmcurrency.data.local.dao.CurrencyDao
 import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApi
 import com.pratama.kmmcurrency.domain.entity.Currency
+import com.pratama.kmmcurrency.domain.entity.ExchangeRate
 import com.pratama.kmmcurrency.domain.entity.Rate
 import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,10 +19,17 @@ class OpenExchangeRepositoryImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : OpenExchangeRepository {
 
+    init {
+        Logger.setTag("pratama-debug")
+    }
 
     override suspend fun getCurrencies(shouldFetch: Boolean): Result<List<Currency>> =
         withContext(dispatcher) {
             val cachedCurrency = currencyDao.getCurrencies()
+            Logger.d { "cachedCurrency -> ${cachedCurrency.size}" }
+            Logger.d { "should fetch ? : $shouldFetch" }
+
+
             if (!shouldFetch && cachedCurrency.isNotEmpty()) {
                 Logger.i { "there is cached currency" }
                 Result.success(cachedCurrency)
@@ -37,20 +45,52 @@ class OpenExchangeRepositoryImpl(
         }
 
     override suspend fun getRates(
-        shouldFetch: Boolean,
-        symbol: String,
-        amount: Double
     ): List<Rate> = withContext(dispatcher) {
+        Logger.i { "get exchange rates" }
         val cachedRate = rateDao.getRates()
+        Logger.i { "cached rate -> ${cachedRate.size}" }
 
-        if (cachedRate != null) {
-            cachedRate
-        } else {
+        cachedRate.ifEmpty {
             openExchangeApi.getRates().also {
                 rateDao.insertRates(it)
             }
         }
+    }
 
+    /**
+     * usd_amount = 1
+    usd_eur_rate = 0.903933
+    usd_idr_rate = 14726.45
 
+    idr_eur_rate = usd_idr_rate / usd_eur_rate
+
+    idr_amount = usd_amount * idr_eur_rate
+
+    print(f"{usd_amount} USD is {idr_amount} IDR")
+
+    base_usd
+     */
+    override suspend fun calculateExchangeRate(
+        from: String,
+        amount: Double
+    ): List<ExchangeRate> {
+
+        val cachedRates = rateDao.getRates()
+
+        val fromUsdRate = rateDao.getRateBySymbol(from).rate
+        val listExchangeRate = mutableListOf<ExchangeRate>()
+
+        Logger.i { "get cached rates ${cachedRates.size}" }
+
+        cachedRates.map {
+            if (it.symbol != from) {
+                val getToUsdRate = rateDao.getRateBySymbol(it.symbol).rate
+                val rateResult = fromUsdRate / getToUsdRate
+                Logger.i { "calculate rate from $from -> ${it.symbol} : $rateResult" }
+                listExchangeRate.add(ExchangeRate(it.symbol, rateResult))
+            }
+        }
+
+        return listExchangeRate
     }
 }
