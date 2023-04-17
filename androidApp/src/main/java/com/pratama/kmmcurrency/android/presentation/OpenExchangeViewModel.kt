@@ -27,7 +27,7 @@ class OpenExchangeViewModel(
 
     init {
         viewModelScope.launch {
-            val data = getCurrencies.invoke(shouldFetch = false)
+            val data = getCurrencies.invoke()
             getExchangeRates.invoke()
 
             if (data.isSuccess) {

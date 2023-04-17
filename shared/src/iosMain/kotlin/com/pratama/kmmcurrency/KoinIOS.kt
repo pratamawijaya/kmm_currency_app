@@ -11,4 +11,8 @@ actual val platformModule = module {
         NativeSqliteDriver(CurrencyDatabase.Schema, "CurrencyDB")
     }
 
+    single<DecimalFormat> {
+        DecimalFormatImplIOS()
+    }
+
 }

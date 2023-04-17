@@ -45,6 +45,9 @@ class CalculateExchangeRate(
 
     }
 
+    /**
+     * 1 EUR * (1 USD / 0.903933 EUR/USD) * 14726.45 IDR/USD = 16282.10 IDR
+     */
     private fun calculate(fromUSD: Double, target: String, amount: Double): Double {
         val targetToUSD = rateDao.getRateBySymbol(target).rate
         val rate = amount * (1 / fromUSD) * targetToUSD

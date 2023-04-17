@@ -14,4 +14,8 @@ actual val platformModule: Module = module {
             "CurrencyDB"
         )
     }
+
+    single<DecimalFormat> {
+        DecimalFormatAndroidImpl()
+    }
 }

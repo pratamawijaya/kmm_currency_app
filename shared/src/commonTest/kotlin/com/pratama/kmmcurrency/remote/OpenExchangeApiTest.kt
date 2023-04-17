@@ -15,7 +15,7 @@ import kotlin.test.*
 class OpenExchangeApiTest {
 
     @Test
-    fun testRequestCurrencyShouldBeSuccess() = runTest {
+    fun `test request currency should be success`() = runTest {
         val engine = MockEngine {
             assertEquals(
                 "https://openexchangerates.org/api/currencies.json",
@@ -52,13 +52,13 @@ class OpenExchangeApiTest {
                     symbol = "ALL",
                     name = "Albanian Lek"
                 )
-            ), result
+            ), result.getOrThrow()
         )
 
     }
 
     @Test
-    fun testRequestRatesShouldBeSuccess() = runTest {
+    fun `test request rates should be success`() = runTest {
         val engine = MockEngine {
             assertEquals(
                 "https://openexchangerates.org/api/latest.json?app_id=aoe",

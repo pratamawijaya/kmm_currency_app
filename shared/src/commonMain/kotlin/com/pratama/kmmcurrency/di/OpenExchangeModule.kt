@@ -56,10 +56,6 @@ val openExchangeModule = module {
         )
     }
 
-    single {
-        DecimalFormat()
-    }
-
     // usecase
     single { GetCurrencies(repo = get()) }
     single { GetExchangeRates(repo = get()) }
