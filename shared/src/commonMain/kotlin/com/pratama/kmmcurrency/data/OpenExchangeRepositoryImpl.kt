@@ -18,20 +18,22 @@ class OpenExchangeRepositoryImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : OpenExchangeRepository {
 
-    override suspend fun getCurrencies(shouldFetch: Boolean): List<Currency> =
+
+    override suspend fun getCurrencies(shouldFetch: Boolean): Result<List<Currency>> =
         withContext(dispatcher) {
             val cachedCurrency = currencyDao.getCurrencies()
             if (!shouldFetch && cachedCurrency.isNotEmpty()) {
                 Logger.i { "there is cached currency" }
-                cachedCurrency
+                Result.success(cachedCurrency)
             } else {
                 Logger.i { "there are no-cached currency" }
                 openExchangeApi.getCurrencies()
                     .also {
-                        currencyDao.insertCurrencies(it)
+                        it.getOrNull()?.let { listCurrencies ->
+                            currencyDao.insertCurrencies(listCurrencies)
+                        }
                     }
             }
-
         }
 
     override suspend fun getRates(

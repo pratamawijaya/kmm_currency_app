@@ -1,23 +1,16 @@
 PODS:
   - shared (1.0)
-  - SwiftLint (0.51.0)
 
 DEPENDENCIES:
   - shared (from `../shared/`)
-  - SwiftLint
-
-SPEC REPOS:
-  trunk:
-    - SwiftLint
 
 EXTERNAL SOURCES:
   shared:
     :path: "../shared/"
 
 SPEC CHECKSUMS:
-  shared: 2d3b24a8fe27b7d9e65b8d075a9672fbc6a1aa10
-  SwiftLint: 1b7561918a19e23bfed960e40759086e70f4dba5
+  shared: c995476f42f6613bc83f20e4698626248b1f5239
 
-PODFILE CHECKSUM: ea8c16fbf5d1ce7df1ad80336ad9fc58543c8ce6
+PODFILE CHECKSUM: f17162cce0640894155827dbd0ee7ff46da9fb00
 
 COCOAPODS: 1.11.2

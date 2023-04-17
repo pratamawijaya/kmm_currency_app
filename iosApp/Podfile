@@ -12,5 +12,4 @@ install! 'cocoapods', :deterministic_uuids => false
 
 target 'iosApp' do
     pod 'shared', :path => '../shared/'
-    pod 'SwiftLint'
 end

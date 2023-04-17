@@ -1,11 +1,14 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
+    id("org.jetbrains.kotlin.native.cocoapods")
     kotlin("plugin.serialization") version libs.versions.plugin.serialization
     id("com.squareup.sqldelight")
     id("com.android.library")
 }
+
+// CocoaPods requires the podspec to have a version.
+version = "1.0"
 
 kotlin {
     android {
@@ -22,9 +25,6 @@ kotlin {
     cocoapods {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
-        version = "1.0"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
         }

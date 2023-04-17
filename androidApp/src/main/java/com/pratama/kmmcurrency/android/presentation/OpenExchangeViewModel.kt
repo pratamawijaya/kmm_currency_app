@@ -15,6 +15,7 @@ class OpenExchangeViewModel(
 
     sealed class OpenExchangeState {
         data class GetCurrenciesSucces(val currencies: List<Currency>) : OpenExchangeState()
+        object Error : OpenExchangeState()
     }
 
     private val _uiState: MutableLiveData<OpenExchangeState> = MutableLiveData()
@@ -23,7 +24,15 @@ class OpenExchangeViewModel(
     init {
         viewModelScope.launch {
             val data = getCurrencies.invoke(shouldFetch = true)
-            _uiState.postValue(OpenExchangeState.GetCurrenciesSucces(data))
+
+            if (data.isSuccess) {
+                data.getOrNull()?.let {
+                    _uiState.postValue(OpenExchangeState.GetCurrenciesSucces(it))
+                }
+            } else {
+                // failed
+                _uiState.postValue(OpenExchangeState.Error)
+            }
         }
     }
 

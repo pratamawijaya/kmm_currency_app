@@ -47,6 +47,9 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
                     currencyDropDown.setAdapter(adapter)
 
                 }
+                else -> {
+
+                }
             }
         }
 
@@ -55,7 +58,10 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val selectedItem = parent?.getItemAtPosition(position) as Currency
         Log.d("debug", "selected item ${selectedItem.symbol}")
-        openExchangeViewModel.getExchangeRate(selectedItem.symbol, amount = inputAmount.text.toString().toDouble())
+        openExchangeViewModel.getExchangeRate(
+            selectedItem.symbol,
+            amount = inputAmount.text.toString().toDouble()
+        )
     }
 
 

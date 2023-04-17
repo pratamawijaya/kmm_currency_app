@@ -1,8 +1,11 @@
 package com.pratama.kmmcurrency.di
 
+import com.pratama.kmmcurrency.cache.CurrencyDatabase
 import com.pratama.kmmcurrency.data.OpenExchangeRepositoryImpl
 import com.pratama.kmmcurrency.data.local.CurrencyDaoImpl
 import com.pratama.kmmcurrency.data.local.RateDaoImpl
+import com.pratama.kmmcurrency.data.local.dao.CurrencyDao
+import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApi
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApiImpl
 import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
@@ -19,13 +22,19 @@ import org.koin.dsl.module
 
 
 val openExchangeModule = module {
+    // database
+    single {
+        CurrencyDatabase(driver = get())
+    }
+
     //dao
-    single {
-        CurrencyDaoImpl(get())
+    single<CurrencyDao> {
+        CurrencyDaoImpl(database = get())
     }
-    single {
-        RateDaoImpl(get())
+    single<RateDao> {
+        RateDaoImpl(currencyDatabase = get())
     }
+
     // api
     single<OpenExchangeApi> {
         OpenExchangeApiImpl(

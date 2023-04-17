@@ -5,9 +5,9 @@ import com.pratama.kmmcurrency.domain.entity.Currency
 import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
 
 class GetCurrencies(private val repo: OpenExchangeRepository) :
-    BaseUseCase<Boolean, List<Currency>> {
+    BaseUseCase<Boolean, Result<List<Currency>>> {
 
-    override suspend fun invoke(shouldFetch: Boolean): List<Currency> {
+    override suspend fun invoke(shouldFetch: Boolean): Result<List<Currency>> {
         return repo.getCurrencies(shouldFetch = shouldFetch)
     }
 }
