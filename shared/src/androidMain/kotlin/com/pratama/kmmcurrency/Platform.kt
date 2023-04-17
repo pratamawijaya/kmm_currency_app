@@ -33,3 +33,13 @@ class AndroidPlatform : Platform, KoinComponent {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
+
+actual class DecimalFormat actual constructor() {
+    actual fun format(value: Double): String {
+        val df = java.text.DecimalFormat()
+        df.isGroupingUsed = false
+        df.maximumFractionDigits = 2
+        df.isDecimalSeparatorAlwaysShown = false
+        return df.format(value)
+    }
+}

@@ -2,6 +2,8 @@ package com.pratama.kmmcurrency
 
 import io.ktor.client.*
 import io.ktor.client.engine.darwin.*
+import platform.Foundation.NSNumber
+import platform.Foundation.NSNumberFormatter
 import platform.UIKit.UIDevice
 
 class IOSPlatform : Platform {
@@ -24,3 +26,13 @@ class IOSPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+
+actual class DecimalFormat actual constructor() {
+    actual fun format(value: Double): String {
+        val formatter = NSNumberFormatter()
+        formatter.minimumFractionDigits = 0u
+        formatter.maximumFractionDigits = 2u
+        formatter.numberStyle = 1u
+        return formatter.stringFromNumber(NSNumber(double))!!
+    }
+}

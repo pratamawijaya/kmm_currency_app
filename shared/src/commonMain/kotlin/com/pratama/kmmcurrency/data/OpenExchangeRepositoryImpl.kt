@@ -57,29 +57,4 @@ class OpenExchangeRepositoryImpl(
             }
         }
     }
-
-    override suspend fun calculateExchangeRate(
-        from: String,
-        amount: Double
-    ): List<ExchangeRate> {
-
-        val cachedRates = rateDao.getRates()
-        val fromUsdRate = rateDao.getRateBySymbol(from).rate
-
-        val listExchangeRate = mutableListOf<ExchangeRate>()
-
-        Logger.i { "get cached rates ${cachedRates.size}" }
-
-        cachedRates.map {
-            if (it.symbol != from) {
-                val getToUsdRate = rateDao.getRateBySymbol(it.symbol).rate
-                val rateResult = fromUsdRate / getToUsdRate
-                Logger.i { "calculate rate from $from -> ${it.symbol} : $rateResult" }
-                listExchangeRate.add(ExchangeRate(it.symbol, rateResult))
-            }
-        }
-
-        return listExchangeRate
-    }
-
 }

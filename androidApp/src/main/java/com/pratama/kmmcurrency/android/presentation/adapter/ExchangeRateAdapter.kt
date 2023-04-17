@@ -21,7 +21,7 @@ class ExchangeRateAdapter(private val exchangeRates: List<ExchangeRate>) :
             val tvRate = view.findViewById<TextView>(R.id.tvRate)
             val tvSymbol = view.findViewById<TextView>(R.id.tvSymbol)
 
-            tvRate.text = "${exchangeRate.value.round(2)}"
+            tvRate.text = "${exchangeRate.value}"
             tvSymbol.text = exchangeRate.symbol
         }
 

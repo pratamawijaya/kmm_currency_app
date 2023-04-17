@@ -43,13 +43,19 @@ class OpenExchangeViewModel(
 
     fun getExchangeRate(symbol: String, amount: Double) {
         viewModelScope.launch {
-            val param = CalculateExchangeRate.Param(
-                from = symbol,
-                amount = amount
-            )
-            val result = calculateRates.invoke(param)
+            if (amount > 0) {
+                val param = CalculateExchangeRate.Param(
+                    from = symbol,
+                    amount = amount
+                )
+                val result = calculateRates.invoke(param)
 
-            _uiState.postValue(OpenExchangeState.SuccessCalculateRate(result))
+                _uiState.postValue(OpenExchangeState.SuccessCalculateRate(result))
+            } else {
+                // amount 0
+            }
+
+
         }
     }
 }

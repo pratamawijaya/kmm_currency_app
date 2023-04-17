@@ -2,6 +2,8 @@ package com.pratama.kmmcurrency.android.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -27,6 +29,7 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
     lateinit var inputAmount: AppCompatEditText
     lateinit var rvExchangeRate: RecyclerView
     lateinit var exchangeRateAdapter: ExchangeRateAdapter
+    private var selectedItem: Currency? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,29 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
         rvExchangeRate = findViewById(R.id.rvExchangeRate)
 
         currencyDropDown.onItemClickListener = this
+
+
+        inputAmount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                selectedItem?.let {
+                    Log.d("debug", "on text changed ${it.symbol}")
+                    if (s.isNotEmpty()) {
+                        openExchangeViewModel.getExchangeRate(
+                            it.symbol,
+                            amount = s.toString().toDouble()
+                        )
+                    }
+
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
 
         openExchangeViewModel.uiState.observe(this) { state ->
             when (state) {
@@ -57,6 +83,8 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
                         amount = inputAmount.text.toString().toDouble()
                     )
 
+                    selectedItem = adapter.getItem(0)
+
                 }
 
                 is OpenExchangeState.SuccessCalculateRate -> {
@@ -74,12 +102,15 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val selectedItem = parent?.getItemAtPosition(position) as Currency
-        Log.d("debug", "selected item ${selectedItem.symbol}")
-        openExchangeViewModel.getExchangeRate(
-            selectedItem.symbol,
-            amount = inputAmount.text.toString().toDouble()
-        )
+        selectedItem = parent?.getItemAtPosition(position) as Currency
+        selectedItem?.let {
+            Log.d("debug", "selected item ${it.symbol}")
+            openExchangeViewModel.getExchangeRate(
+                it.symbol,
+                amount = inputAmount.text.toString().toDouble()
+            )
+        }
+
     }
 
 

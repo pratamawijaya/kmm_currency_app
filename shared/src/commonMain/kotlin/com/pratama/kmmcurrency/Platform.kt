@@ -13,3 +13,7 @@ interface Platform {
 expect fun getPlatform(): Platform
 
 expect val platformModule: Module
+
+expect class DecimalFormat() {
+    fun format(value: Double): String
+}

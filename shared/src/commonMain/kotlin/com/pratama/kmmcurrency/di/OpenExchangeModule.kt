@@ -1,5 +1,6 @@
 package com.pratama.kmmcurrency.di
 
+import com.pratama.kmmcurrency.DecimalFormat
 import com.pratama.kmmcurrency.cache.CurrencyDatabase
 import com.pratama.kmmcurrency.data.OpenExchangeRepositoryImpl
 import com.pratama.kmmcurrency.data.local.CurrencyDaoImpl
@@ -55,10 +56,14 @@ val openExchangeModule = module {
         )
     }
 
+    single {
+        DecimalFormat()
+    }
+
     // usecase
     single { GetCurrencies(repo = get()) }
     single { GetExchangeRates(repo = get()) }
-    single { CalculateExchangeRate(repo = get()) }
+    single { CalculateExchangeRate(repo = get(), rateDao = get(), decimalFormat = get()) }
 }
 
 fun setupHttpClient(
