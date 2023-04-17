@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 rootProject.name = "kmm_currency_app"
 include(":androidApp")
 include(":shared")
+
+enableFeaturePreview("VERSION_CATALOGS")

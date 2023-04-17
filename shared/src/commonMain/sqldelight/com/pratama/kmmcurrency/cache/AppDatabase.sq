@@ -1,0 +1,39 @@
+CREATE TABLE Currency (
+    symbol TEXT NOT NULL,
+    name TEXT
+);
+
+CREATE TABLE Rate (
+    symbol TEXT NOT NULL,
+    rate REAL NOT NULL
+);
+
+insertCurrency:
+INSERT INTO Currency(symbol, name)
+VALUES(?,?);
+
+insertRate:
+INSERT INTO Rate(symbol, rate)
+VALUES(?,?);
+
+selectRateBySymbol:
+SELECT * FROM Rate
+WHERE symbol = ?;
+
+selectCurrencyBySymbol:
+SELECT * FROM Currency
+WHERE symbol = ?;
+
+removeAllCurrency:
+DELETE FROM Currency;
+
+removeAllRate:
+DELETE FROM Rate;
+
+selectAllCurrency:
+SELECT Currency.*
+FROM Currency;
+
+selectAllRate:
+SELECT Rate.*
+FROM Rate;

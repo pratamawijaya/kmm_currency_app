@@ -1,4 +1,5 @@
 package com.pratama.kmmcurrency
 
-class TestUtilAndroid {
-}
+import com.squareup.sqldelight.db.SqlDriver
+
+internal expect fun testDbConnection(): SqlDriver

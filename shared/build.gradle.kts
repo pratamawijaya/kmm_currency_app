@@ -1,6 +1,9 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization") version libs.versions.plugin.serialization
+    id("com.squareup.sqldelight")
     id("com.android.library")
 }
 
@@ -26,16 +29,39 @@ kotlin {
             baseName = "shared"
         }
     }
-    
+
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.bundles.ktor.common)
+                implementation(libs.coroutines.core)
+                implementation(libs.kotlinx.dateTime)
+                implementation(libs.sqlDelight.runtime)
+                implementation(libs.koin.core)
+                implementation(libs.koin.test)
+                implementation(kotlin("stdlib-common"))
+                implementation(libs.touchlab.kermit)
+            }
+        }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.bundles.shared.commonTest)
             }
         }
-        val androidMain by getting
-        val androidUnitTest by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.bundles.ktor.android)
+                implementation(libs.sqlDelight.android)
+                implementation(libs.koin.android)
+            }
+        }
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.bundles.shared.androidTest)
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -44,6 +70,11 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+
+            dependencies {
+                implementation(libs.ktor.client.ios)
+                implementation(libs.sqlDelight.native)
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting
@@ -59,9 +90,15 @@ kotlin {
 
 android {
     namespace = "com.pratama.kmmcurrency"
-    compileSdk = 33
+    compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 24
-        targetSdk = 33
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+    }
+}
+
+sqldelight {
+    database("CurrencyDatabase") {
+        packageName = "com.pratama.kmmcurrency.cache"
     }
 }
