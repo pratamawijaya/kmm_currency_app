@@ -11,6 +11,7 @@ import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 class OpenExchangeRepositoryImpl(
     private val openExchangeApi: OpenExchangeApi,
@@ -57,27 +58,14 @@ class OpenExchangeRepositoryImpl(
         }
     }
 
-    /**
-     * usd_amount = 1
-    usd_eur_rate = 0.903933
-    usd_idr_rate = 14726.45
-
-    idr_eur_rate = usd_idr_rate / usd_eur_rate
-
-    idr_amount = usd_amount * idr_eur_rate
-
-    print(f"{usd_amount} USD is {idr_amount} IDR")
-
-    base_usd
-     */
     override suspend fun calculateExchangeRate(
         from: String,
         amount: Double
     ): List<ExchangeRate> {
 
         val cachedRates = rateDao.getRates()
-
         val fromUsdRate = rateDao.getRateBySymbol(from).rate
+
         val listExchangeRate = mutableListOf<ExchangeRate>()
 
         Logger.i { "get cached rates ${cachedRates.size}" }
@@ -93,4 +81,5 @@ class OpenExchangeRepositoryImpl(
 
         return listExchangeRate
     }
+
 }

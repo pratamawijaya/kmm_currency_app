@@ -10,9 +10,12 @@ import android.widget.AutoCompleteTextView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.pratama.kmmcurrency.android.R
 import com.pratama.kmmcurrency.android.presentation.OpenExchangeViewModel.*
+import com.pratama.kmmcurrency.android.presentation.adapter.ExchangeRateAdapter
 import com.pratama.kmmcurrency.domain.entity.Currency
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,6 +25,8 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
 
     private var listCurrencies = mutableListOf<Currency>()
     lateinit var inputAmount: AppCompatEditText
+    lateinit var rvExchangeRate: RecyclerView
+    lateinit var exchangeRateAdapter: ExchangeRateAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,7 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
 
         val currencyDropDown = findViewById<AutoCompleteTextView>(R.id.currencyDropDown)
         inputAmount = findViewById(R.id.amount)
+        rvExchangeRate = findViewById(R.id.rvExchangeRate)
 
         currencyDropDown.onItemClickListener = this
 
@@ -51,6 +57,13 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
                         amount = inputAmount.text.toString().toDouble()
                     )
 
+                }
+
+                is OpenExchangeState.SuccessCalculateRate -> {
+                    exchangeRateAdapter = ExchangeRateAdapter(state.exchangRates)
+                    rvExchangeRate.adapter = exchangeRateAdapter
+                    val gridLayout = GridLayoutManager(this, 3)
+                    rvExchangeRate.layoutManager = gridLayout
                 }
                 else -> {
 

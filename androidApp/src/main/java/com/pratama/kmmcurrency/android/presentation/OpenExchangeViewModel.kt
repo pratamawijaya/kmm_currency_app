@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pratama.kmmcurrency.domain.entity.Currency
+import com.pratama.kmmcurrency.domain.entity.ExchangeRate
 import com.pratama.kmmcurrency.domain.usecase.CalculateExchangeRate
 import com.pratama.kmmcurrency.domain.usecase.GetCurrencies
 import com.pratama.kmmcurrency.domain.usecase.GetExchangeRates
@@ -17,6 +18,7 @@ class OpenExchangeViewModel(
 
     sealed class OpenExchangeState {
         data class GetCurrenciesSucces(val currencies: List<Currency>) : OpenExchangeState()
+        data class SuccessCalculateRate(val exchangRates: List<ExchangeRate>) : OpenExchangeState()
         object Error : OpenExchangeState()
     }
 
@@ -46,6 +48,8 @@ class OpenExchangeViewModel(
                 amount = amount
             )
             val result = calculateRates.invoke(param)
+
+            _uiState.postValue(OpenExchangeState.SuccessCalculateRate(result))
         }
     }
 }

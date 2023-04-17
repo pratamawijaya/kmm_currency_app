@@ -23,6 +23,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textinputlayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
@@ -36,4 +37,11 @@
             android:layout_weight="1"
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExchangeRate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textinputlayout"
+        android:layout_marginTop="16dp" />
 </RelativeLayout>
