@@ -24,60 +24,30 @@ class CalculateExchangeRate(
         val amount: Double
     )
 
-    /**
-     * # Replace YOUR_APP_ID with your API key
-    response = requests.get("https://openexchangerates.org/api/latest.json?app_id=YOUR_APP_ID")
-
-    data = response.json()
-
-    # Get the exchange rate for USD to EUR
-    usd_eur_rate = data["rates"]["EUR"]
-
-    # Convert 100 USD to EUR
-    usd_amount = 100
-    eur_amount = usd_amount * usd_eur_rate
-
-    print(f"{usd_amount} USD is {eur_amount} EUR")
-
-
-    usd_amount = 1
-    usd_eur_rate = 0.903933
-    usd_idr_rate = 14726.45
-
-    idr_eur_rate = usd_idr_rate / usd_eur_rate
-
-    idr_amount = usd_amount * idr_eur_rate
-
-    print(f"{usd_amount} USD is {idr_amount} IDR")
-
-
-    1 EUR * (1 USD / EUR rate) * IDR rate = X IDR
-
-    where X is the equivalent value of 1 EUR in IDR.
-
-    Substituting the given exchange rates, we get:
-
-    1 EUR * (1 USD / 0.903933 EUR/USD) * 14726.45 IDR/USD = 16282.10 IDR
-
-     */
-
     override suspend fun invoke(input: Param): List<ExchangeRate> {
         val rates = repo.getRates()
         Logger.i { "get cached rates ${rates.size}" }
-        val fromToUSD = rateDao.getRateBySymbol(input.from).rate
         val listExchangeRate = mutableListOf<ExchangeRate>()
+
+        val fromToUSD = rateDao.getRateBySymbol(input.from).rate
 
         rates.map {
             if (it.symbol != input.from) {
-                val targetToUSD = rateDao.getRateBySymbol(it.symbol).rate
-                val rate = input.amount * (1 / fromToUSD) * targetToUSD
-                val roundedAmount = decimalFormat.format(rate)
-                Logger.i { "result rate ${input.from} - ${it.symbol} = $roundedAmount" }
-                listExchangeRate.add(ExchangeRate(it.symbol, roundedAmount.toDouble()))
+                val rate = calculate(fromToUSD, it.symbol, input.amount)
+
+                Logger.i { "result rate ${input.from} - ${it.symbol} = $rate" }
+
+                listExchangeRate.add(ExchangeRate(it.symbol, rate))
             }
         }
 
         return listExchangeRate
 
+    }
+
+    private fun calculate(fromUSD: Double, target: String, amount: Double): Double {
+        val targetToUSD = rateDao.getRateBySymbol(target).rate
+        val rate = amount * (1 / fromUSD) * targetToUSD
+        return decimalFormat.format(rate).toDouble()
     }
 }

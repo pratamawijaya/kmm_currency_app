@@ -54,32 +54,6 @@ class OpenExchangeApiImpl(
         }
     }
 
-    /**
-     * # Replace YOUR_APP_ID with your API key
-    response = requests.get("https://openexchangerates.org/api/latest.json?app_id=YOUR_APP_ID")
-
-    data = response.json()
-
-    # Get the exchange rate for USD to EUR
-    usd_eur_rate = data["rates"]["EUR"]
-
-    # Convert 100 USD to EUR
-    usd_amount = 100
-    eur_amount = usd_amount * usd_eur_rate
-
-    print(f"{usd_amount} USD is {eur_amount} EUR")
-
-
-    usd_amount = 1
-    usd_eur_rate = 0.903933
-    usd_idr_rate = 14726.45
-
-    idr_eur_rate = usd_idr_rate / usd_eur_rate
-
-    idr_amount = usd_amount * idr_eur_rate
-
-    print(f"{usd_amount} USD is {idr_amount} IDR")
-     */
     override suspend fun getRates(): List<Rate> {
         val response =
             httpClient.get("https://openexchangerates.org/api/latest.json?app_id=$appId")
