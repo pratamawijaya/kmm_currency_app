@@ -12,7 +12,10 @@ class FetcherDaoImpl(private val database: CurrencyDatabase) : FetcherDao, BaseD
         get() = database.appDatabaseQueries
 
     override fun insertLastFetch(key: String, timestamp: Long) {
-        queries.insertFetch(key, timestamp.toDouble())
+        queries.transaction {
+            queries.removeFetcher(key)
+            queries.insertFetch(key, timestamp.toDouble())
+        }
     }
 
     override fun getLastFetch(key: String): Long? {

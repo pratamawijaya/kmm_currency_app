@@ -46,6 +46,13 @@ WHERE symbol = ? LIMIT 1;
 removeAllCurrency:
 DELETE FROM Currency;
 
+removeFetcher:
+DELETE FROM Fetcher
+WHERE key = ?;
+
+removeAllFetcher:
+DELETE FROM Fetcher;
+
 removeAllRate:
 DELETE FROM Rate;
 

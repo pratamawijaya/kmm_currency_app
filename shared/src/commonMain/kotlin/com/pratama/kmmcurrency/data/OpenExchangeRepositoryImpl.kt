@@ -76,10 +76,9 @@ class OpenExchangeRepositoryImpl(
 
     private fun canFetch(key: String, currentTimestamp: Long): Boolean {
         val lastFetch = fetchDao.getLastFetch(key) ?: return true
-
         val elapsedTime = currentTimestamp - lastFetch
         Logger.i { "currentTime:  $currentTimestamp - $lastFetch : $elapsedTime " }
-        //174 < 1800
+        //174 > 1800
         return elapsedTime > THRESHOLD
     }
 
