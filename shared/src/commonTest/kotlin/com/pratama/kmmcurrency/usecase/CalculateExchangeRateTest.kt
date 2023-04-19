@@ -39,7 +39,7 @@ class CalculateExchangeRateTest {
     fun `test calculate rate EURtoIDR`() = runTest {
         val expectedResult = 2.0
         val input = CalculateExchangeRate.Param("EUR", 1.0)
-        val result = calculateExchangeRate.invoke(input)
+        val result = calculateExchangeRate.invoke(input).getOrThrow()
 
         assertEquals(result[0].symbol, "IDR")
         assertEquals(result[0].value, expectedResult)
@@ -53,7 +53,7 @@ class CalculateExchangeRateTest {
     fun `test calculate rate EURtoALL`() = runTest {
         val expectedResult = 1.5
         val input = CalculateExchangeRate.Param("EUR", 1.0)
-        val result = calculateExchangeRate.invoke(input)
+        val result = calculateExchangeRate.invoke(input).getOrThrow()
 
         assertEquals(result[2].symbol, "ALL")
         assertEquals(result[2].value, expectedResult)
@@ -63,7 +63,7 @@ class CalculateExchangeRateTest {
     fun `test calculate rate EURtoIDR amount10`() = runTest {
         val expectedResult = 20.0
         val input = CalculateExchangeRate.Param("EUR", 10.0)
-        val result = calculateExchangeRate.invoke(input)
+        val result = calculateExchangeRate.invoke(input).getOrThrow()
 
         assertEquals(result[0].symbol, "IDR")
         assertEquals(result[0].value, expectedResult)

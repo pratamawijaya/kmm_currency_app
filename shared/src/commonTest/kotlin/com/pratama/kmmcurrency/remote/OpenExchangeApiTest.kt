@@ -91,7 +91,7 @@ class OpenExchangeApiTest {
             listOf(
                 Rate(symbol = "AED", rate = 3.6724),
                 Rate(symbol = "AFN", rate = 86.859802),
-            ), result
+            ), result.getOrThrow()
         )
     }
 

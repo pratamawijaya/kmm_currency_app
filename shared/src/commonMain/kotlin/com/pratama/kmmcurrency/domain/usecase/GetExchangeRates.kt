@@ -6,9 +6,9 @@ import com.pratama.kmmcurrency.domain.entity.Rate
 import com.pratama.kmmcurrency.domain.repository.OpenExchangeRepository
 
 class GetExchangeRates(private val repo: OpenExchangeRepository) :
-    BaseEmptyUseCase<List<Rate>> {
+    BaseEmptyUseCase<Result<List<Rate>>> {
 
-    override suspend fun invoke(): List<Rate> {
+    override suspend fun invoke(): Result<List<Rate>> {
         return repo.getRates()
     }
 }

@@ -13,7 +13,7 @@ class CalculateExchangeRate(
     private val rateDao: RateDao,
     private val decimalFormat: DecimalFormat
 ) :
-    BaseUseCase<CalculateExchangeRate.Param, List<ExchangeRate>> {
+    BaseUseCase<CalculateExchangeRate.Param, Result<List<ExchangeRate>>> {
 
     init {
         Logger.setTag("calculate_rate")
@@ -24,14 +24,15 @@ class CalculateExchangeRate(
         val amount: Double
     )
 
-    override suspend fun invoke(input: Param): List<ExchangeRate> {
-        val rates = repo.getRates()
-        Logger.i { "get cached rates ${rates.size}" }
+    override suspend fun invoke(input: Param): Result<List<ExchangeRate>> {
+        val rates = repo.getRates().getOrNull()
+
+        Logger.i { "get cached rates ${rates?.size}" }
         val listExchangeRate = mutableListOf<ExchangeRate>()
 
         val fromToUSD = rateDao.getRateBySymbol(input.from).rate
 
-        rates.map {
+        rates?.map {
             if (it.symbol != input.from) {
                 val rate = calculate(fromToUSD, it.symbol, input.amount)
 
@@ -41,7 +42,7 @@ class CalculateExchangeRate(
             }
         }
 
-        return listExchangeRate
+        return Result.success(listExchangeRate)
 
     }
 

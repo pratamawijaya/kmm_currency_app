@@ -38,22 +38,21 @@ class OpenExchangeRepositoryImpl(
                 Logger.i { "there are no-cached currency" }
                 openExchangeApi.getCurrencies()
                     .also {
-                        it.getOrNull()?.let { listCurrencies ->
-                            currencyDao.insertCurrencies(listCurrencies)
-                        }
+                        currencyDao.insertCurrencies(it.getOrDefault(emptyList()))
                     }
             }
         }
 
-    override suspend fun getRates(
-    ): List<Rate> = withContext(dispatcher) {
+    override suspend fun getRates(): Result<List<Rate>> = withContext(dispatcher) {
         Logger.i { "get exchange rates" }
         val cachedRate = rateDao.getRates()
-        Logger.i { "cached rate -> ${cachedRate.size}" }
 
-        cachedRate.ifEmpty {
+        Logger.i { "cached rate -> ${cachedRate.size}" }
+        if (cachedRate != null) {
+            Result.success(cachedRate)
+        } else {
             openExchangeApi.getRates().also {
-                rateDao.insertRates(it)
+                rateDao.insertRates(it.getOrDefault(emptyList()))
             }
         }
     }

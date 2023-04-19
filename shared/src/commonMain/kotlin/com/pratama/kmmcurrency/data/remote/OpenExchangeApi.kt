@@ -7,5 +7,5 @@ import com.pratama.kmmcurrency.domain.entity.Rate
 interface OpenExchangeApi {
     suspend fun getCurrencies(): Result<List<Currency>>
 
-    suspend fun getRates(): List<Rate>
+    suspend fun getRates(): Result<List<Rate>>
 }

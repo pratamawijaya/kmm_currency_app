@@ -21,6 +21,6 @@ class GetExchangeRatesTest {
     @Test
     fun `test execute GetExchangeRateUseCase`() = runTest {
         val result = getExchangeRatesTest()
-        assertTrue(result.isNotEmpty(), "usecase result empty")
+        assertTrue(result.getOrThrow().isNotEmpty(), "usecase result empty")
     }
 }

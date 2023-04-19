@@ -23,7 +23,7 @@ class OpenExchangeApiImpl(
     }
 
     override suspend fun getCurrencies(): Result<List<Currency>> {
-        Logger.d { "trying get currency" }
+        Logger.d { "trying get currency from network" }
         val response = httpClient.safeRequest<Map<String, String>, String> {
             url("https://openexchangerates.org/api/currencies.json")
             method = HttpMethod.Get
@@ -54,21 +54,34 @@ class OpenExchangeApiImpl(
         }
     }
 
-    override suspend fun getRates(): List<Rate> {
-        val response =
-            httpClient.get("https://openexchangerates.org/api/latest.json?app_id=$appId")
-                .body<String>()
+    override suspend fun getRates(): Result<List<Rate>> {
+        Logger.d { "trying get rates from network" }
 
-        val exchangeRates = Json.decodeFromString<RateResponse>(response)
-        val rates = exchangeRates.rates
-        val timestamp = exchangeRates.timestamp
-
-        val listRate = mutableListOf<Rate>()
-
-        rates.map {
-            Logger.i { "rates ${it.key} ${it.value} -- $timestamp" }
-            listRate.add(Rate(it.key, it.value))
+        val response = httpClient.safeRequest<String, String> {
+            url("https://openexchangerates.org/api/latest.json?app_id=$appId")
+            method = HttpMethod.Get
         }
-        return listRate
+
+        return when (response) {
+            is ApiResponse.Success -> {
+                Logger.d { "get rates success" }
+                val exchangesRates = Json.decodeFromString<RateResponse>(response.body)
+
+                val listRate = mutableListOf<Rate>()
+                exchangesRates.rates.map {
+                    listRate.add(Rate(it.key, it.value))
+                }
+                return Result.success(listRate)
+            }
+            is ApiResponse.Error.HttpError -> {
+                return Result.failure(HttpException(response.code, msg = response.errorBody))
+            }
+            is ApiResponse.Error.NetworkError -> {
+                return Result.failure(NetworkException)
+            }
+            else -> {
+                return Result.failure(UnknownException)
+            }
+        }
     }
 }

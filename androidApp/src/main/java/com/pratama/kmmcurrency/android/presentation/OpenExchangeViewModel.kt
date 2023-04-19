@@ -50,7 +50,15 @@ class OpenExchangeViewModel(
                 )
                 val result = calculateRates.invoke(param)
 
-                _uiState.postValue(OpenExchangeState.SuccessCalculateRate(result))
+                if (result.isSuccess) {
+                    result.getOrNull()?.let {
+                        _uiState.postValue(OpenExchangeState.SuccessCalculateRate(it))
+                    }
+                } else {
+
+                }
+
+
             } else {
                 // amount 0
             }
