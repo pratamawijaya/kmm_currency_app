@@ -29,7 +29,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/inputAmount"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp">
 
         <AutoCompleteTextView
             android:id="@+id/currencyDropDown"
@@ -52,5 +53,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/textinputlayout"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="8dp" />
 </RelativeLayout>
