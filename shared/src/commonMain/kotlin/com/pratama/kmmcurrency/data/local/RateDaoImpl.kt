@@ -29,8 +29,8 @@ class RateDaoImpl(private val currencyDatabase: CurrencyDatabase) : RateDao, Bas
         }
     }
 
-    override fun getRateBySymbol(symbol: String): List<Rate> {
-        return queries.selectRateBySymbol(symbol, ::mapRate).executeAsList()
+    override fun getRateBySymbol(symbol: String): Rate? {
+        return queries.selectRateBySymbol(symbol, ::mapRate).executeAsOneOrNull()
     }
 
     private fun mapRate(symbol: String, rate: Double): Rate {

@@ -26,7 +26,7 @@ class ExchangeRateAdapter(
         fun bindView(exchangeRate: ExchangeRate) {
             binding.tvLabelTo.text = exchangeRate.symbol
             binding.tvLabelToName.text = exchangeRate.name
-            binding.tvLabelValue.text = "${exchangeRate.value}"
+            binding.tvLabelValue.text = "${exchangeRate.rate}"
         }
     }
 

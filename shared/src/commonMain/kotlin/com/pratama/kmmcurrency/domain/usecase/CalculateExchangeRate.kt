@@ -33,12 +33,22 @@ class CalculateExchangeRate(
 
         measureTimeMillis({ time -> Logger.i { "execution time calculate rate $time ms" } }, {
             val rates = repo.getRates().getOrThrow()
-            val fromToUSD = rateDao.getRateBySymbol(input.from).first().rate
+            val fromToUSD = rateDao.getRateBySymbol(input.from)?.rate ?: 0.0
             rates?.map {
                 if (it.symbol != input.from) {
-                    val rate = calculate(fromToUSD, it.symbol, input.amount)
+                    val rate = calculate(
+                        fromUSD = fromToUSD,
+                        target = it.symbol,
+                        amount = input.amount
+                    )
                     val name = currencyDao.getCurrencyBySymbol(it.symbol)?.name
-                    listExchangeRate.add(ExchangeRate(it.symbol, name = name ?: "", rate))
+                    listExchangeRate.add(
+                        ExchangeRate(
+                            symbol = it.symbol,
+                            name = name ?: "",
+                            rate = rate
+                        )
+                    )
                 }
             }
         })
@@ -50,7 +60,7 @@ class CalculateExchangeRate(
      * 1 EUR * (1 USD / 0.903933 EUR/USD) * 14726.45 IDR/USD = 16282.10 IDR
      */
     private fun calculate(fromUSD: Double, target: String, amount: Double): Double {
-        val targetToUSD = rateDao.getRateBySymbol(target).first().rate
+        val targetToUSD = rateDao.getRateBySymbol(target)?.rate ?: 0.0
         val rate = amount * (1 / fromUSD) * targetToUSD
         return decimalFormat.format(rate).toDouble()
     }

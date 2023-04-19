@@ -1,6 +1,5 @@
 package com.pratama.kmmcurrency.data.local
 
-import co.touchlab.kermit.Logger
 import com.pratama.kmmcurrency.cache.AppDatabaseQueries
 import com.pratama.kmmcurrency.cache.BaseDao
 import com.pratama.kmmcurrency.cache.CurrencyDatabase

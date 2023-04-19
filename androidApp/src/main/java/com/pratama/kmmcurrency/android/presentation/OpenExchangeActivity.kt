@@ -25,6 +25,7 @@ import com.pratama.kmmcurrency.android.databinding.ActivityOpenExchangeBinding
 import com.pratama.kmmcurrency.android.presentation.OpenExchangeViewModel.*
 import com.pratama.kmmcurrency.android.presentation.adapter.ExchangeRateAdapter
 import com.pratama.kmmcurrency.domain.entity.Currency
+import com.pratama.kmmcurrency.domain.entity.ExchangeRate
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OpenExchangeActivity : BaseActivityBinding<ActivityOpenExchangeBinding>(),
@@ -33,6 +34,7 @@ class OpenExchangeActivity : BaseActivityBinding<ActivityOpenExchangeBinding>(),
     private val openExchangeViewModel: OpenExchangeViewModel by viewModel()
 
     private var listCurrencies = mutableListOf<Currency>()
+    private var listExchangeRates = mutableListOf<ExchangeRate>()
     lateinit var exchangeRateAdapter: ExchangeRateAdapter
     private var selectedItem: Currency? = null
 
@@ -40,6 +42,15 @@ class OpenExchangeActivity : BaseActivityBinding<ActivityOpenExchangeBinding>(),
         get() = ActivityOpenExchangeBinding::inflate
 
     override fun setupView(binding: ActivityOpenExchangeBinding) {
+
+        exchangeRateAdapter = ExchangeRateAdapter(
+            listExchangeRates,
+            amount = binding.textInputAmount.text.toString().toDouble(),
+            labelFrom = selectedItem?.symbol ?: ""
+        )
+        binding.rvExchangeRate.adapter = exchangeRateAdapter
+        binding.rvExchangeRate.layoutManager =
+            LinearLayoutManager(this@OpenExchangeActivity)
 
         with(binding) {
             currencyDropDown.onItemClickListener = this@OpenExchangeActivity
@@ -108,14 +119,9 @@ class OpenExchangeActivity : BaseActivityBinding<ActivityOpenExchangeBinding>(),
                     }
 
                     is OpenExchangeState.SuccessCalculateRate -> {
-                        exchangeRateAdapter = ExchangeRateAdapter(
-                            state.exchangRates,
-                            amount = textInputAmount.text.toString().toDouble(),
-                            labelFrom = selectedItem?.symbol ?: ""
-                        )
-                        rvExchangeRate.adapter = exchangeRateAdapter
-                        rvExchangeRate.layoutManager =
-                            LinearLayoutManager(this@OpenExchangeActivity)
+                        listExchangeRates.clear()
+                        listExchangeRates.addAll(state.exchangRates)
+                        exchangeRateAdapter.notifyDataSetChanged()
                     }
                     else -> {
 
