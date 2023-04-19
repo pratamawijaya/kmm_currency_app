@@ -11,6 +11,10 @@ interface Platform {
     fun isDebugMode(): Boolean
 }
 
+interface AppInfo {
+    val appId: String
+}
+
 expect fun getPlatform(): Platform
 
 expect val platformModule: Module
