@@ -57,12 +57,12 @@ class OpenExchangeRepositoryImpl(
     override suspend fun getRates(): Result<List<Rate>> = withContext(dispatcher) {
         Logger.i { "get exchange rates" }
         val cachedRate = rateDao.getRates()
-        val isMoreThan30minutes = canFetch(fetchKeyRate, Clock.System.now().epochSeconds)
-
+        val isMoreThan30Minutes =
+            canFetch(fetchKeyRate, Clock.System.now().epochSeconds)
         Logger.i { "cached rate is not empty : ${cachedRate.isNotEmpty()}" }
-        Logger.i { "cached rate more than 30minutes : ${!isMoreThan30minutes}" }
+        Logger.i { "cached rate more than 30minutes : ${!isMoreThan30Minutes}" }
 
-        if (cachedRate.isNotEmpty() && !isMoreThan30minutes) {
+        if (cachedRate.isNotEmpty() && !isMoreThan30Minutes) {
             Result.success(cachedRate)
         } else {
             val result = openExchangeApi.getRates()
@@ -76,7 +76,11 @@ class OpenExchangeRepositoryImpl(
 
     private fun canFetch(key: String, currentTimestamp: Long): Boolean {
         val lastFetch = fetchDao.getLastFetch(key) ?: return true
-        return (currentTimestamp - lastFetch) < THRESHOLD
+
+        val elapsedTime = currentTimestamp - lastFetch
+        Logger.i { "currentTime:  $currentTimestamp - $lastFetch : $elapsedTime " }
+        //174 < 1800
+        return elapsedTime > THRESHOLD
     }
 
 }

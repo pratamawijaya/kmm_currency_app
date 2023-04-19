@@ -27,22 +27,20 @@ class CalculateExchangeRate(
     )
 
     override suspend fun invoke(input: Param): Result<List<ExchangeRate>> {
-        measureTimeMillis({ time -> Logger.i { "execution time calculate rate $time ms" } }, {
-            val listExchangeRate = mutableListOf<ExchangeRate>()
+        val listExchangeRate = mutableListOf<ExchangeRate>()
 
+        measureTimeMillis({ time -> Logger.i { "execution time calculate rate $time ms" } }, {
             val rates = repo.getRates().getOrThrow()
             val fromToUSD = rateDao.getRateBySymbol(input.from).first().rate
-
-
             rates?.map {
                 if (it.symbol != input.from) {
                     val rate = calculate(fromToUSD, it.symbol, input.amount)
                     listExchangeRate.add(ExchangeRate(it.symbol, rate))
                 }
             }
-
-            return Result.success(listExchangeRate)
         })
+
+        return Result.success(listExchangeRate)
     }
 
     /**
