@@ -3,10 +3,21 @@ CREATE TABLE Currency (
     name TEXT
 );
 
+CREATE INDEX currency_symbol ON Currency(symbol);
+
 CREATE TABLE Rate (
     symbol TEXT NOT NULL,
     rate REAL NOT NULL
 );
+
+CREATE INDEX rate_symbol ON Rate(symbol);
+
+CREATE TABLE Fetcher(
+    key TEXT NOT NULL,
+    lastfetch REAL NOT NULL
+);
+
+CREATE INDEX fetcher_key ON Fetcher(key);
 
 insertCurrency:
 INSERT INTO Currency(symbol, name)
@@ -16,13 +27,21 @@ insertRate:
 INSERT INTO Rate(symbol, rate)
 VALUES(?,?);
 
+insertFetch:
+INSERT INTO Fetcher(key, lastfetch)
+VALUES(?,?);
+
+selectFetchByKey:
+SELECT * FROM Fetcher
+WHERE key = ? LIMIT 1;
+
 selectRateBySymbol:
 SELECT * FROM Rate
-WHERE symbol = ?;
+WHERE symbol = ? LIMIT 1;
 
 selectCurrencyBySymbol:
 SELECT * FROM Currency
-WHERE symbol = ?;
+WHERE symbol = ? LIMIT 1;
 
 removeAllCurrency:
 DELETE FROM Currency;

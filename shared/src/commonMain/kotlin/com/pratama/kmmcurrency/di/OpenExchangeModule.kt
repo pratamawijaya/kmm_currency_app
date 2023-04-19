@@ -2,10 +2,13 @@ package com.pratama.kmmcurrency.di
 
 import com.pratama.kmmcurrency.DecimalFormat
 import com.pratama.kmmcurrency.cache.CurrencyDatabase
+import com.pratama.kmmcurrency.data.FetchChecker
 import com.pratama.kmmcurrency.data.OpenExchangeRepositoryImpl
 import com.pratama.kmmcurrency.data.local.CurrencyDaoImpl
+import com.pratama.kmmcurrency.data.local.FetcherDaoImpl
 import com.pratama.kmmcurrency.data.local.RateDaoImpl
 import com.pratama.kmmcurrency.data.local.dao.CurrencyDao
+import com.pratama.kmmcurrency.data.local.dao.FetcherDao
 import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApi
 import com.pratama.kmmcurrency.data.remote.OpenExchangeApiImpl
@@ -36,6 +39,13 @@ val openExchangeModule = module {
     single<RateDao> {
         RateDaoImpl(currencyDatabase = get())
     }
+    single<FetcherDao> {
+        FetcherDaoImpl(database = get())
+    }
+    single {
+        FetchChecker(fetcherDao = get())
+    }
+
 
     // api
     single<OpenExchangeApi> {
@@ -51,6 +61,7 @@ val openExchangeModule = module {
     single<OpenExchangeRepository> {
         OpenExchangeRepositoryImpl(
             openExchangeApi = get(),
+            get(),
             get(),
             get()
         )

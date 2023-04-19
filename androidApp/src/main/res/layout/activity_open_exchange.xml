@@ -38,6 +38,14 @@
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <ProgressBar
+        android:id="@+id/loadingProgress"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/textinputlayout"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExchangeRate"
         android:layout_width="match_parent"

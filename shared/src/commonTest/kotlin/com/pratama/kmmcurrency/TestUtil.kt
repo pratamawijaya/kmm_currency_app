@@ -1,5 +1,6 @@
 package com.pratama.kmmcurrency
 
+import com.pratama.kmmcurrency.data.local.dao.FetcherDao
 import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.domain.entity.Currency
 import com.pratama.kmmcurrency.domain.entity.Rate
@@ -18,12 +19,12 @@ class FakeFormatter : DecimalFormat {
 }
 
 class FakeRepo : OpenExchangeRepository {
-    override suspend fun getCurrencies(shouldFetch: Boolean): Result<List<Currency>> {
+    override suspend fun getCurrencies(): Result<List<Currency>> {
         return Result.success(listOf(Currency("EUR", "Euro")))
     }
 
-    override suspend fun getRates(): List<Rate> {
-        return baseRates
+    override suspend fun getRates(): Result<List<Rate>> {
+        return Result.success(baseRates)
     }
 
 }
@@ -31,7 +32,7 @@ class FakeRepo : OpenExchangeRepository {
 class FakeRateDao : RateDao {
 
 
-    override fun getRates(): List<Rate> {
+    override suspend fun getRates(): List<Rate> {
         return baseRates
     }
 
@@ -40,6 +41,24 @@ class FakeRateDao : RateDao {
 
     override fun getRateBySymbol(symbol: String): Rate {
         return baseRates.find { it.symbol == symbol } ?: baseRates[0]
+    }
+
+}
+
+class FakeFetcherDao : FetcherDao {
+    var lastFetch: Long = 1L
+
+    fun setupLastFetch(data: Long) {
+        lastFetch = data
+    }
+
+    override fun insertLastFetch(key: String, timestamp: Long) {
+
+    }
+
+
+    override fun getLastFetch(key: String): Long {
+        return lastFetch
     }
 
 }

@@ -9,9 +9,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
@@ -28,6 +30,8 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
     private var listCurrencies = mutableListOf<Currency>()
     lateinit var inputAmount: AppCompatEditText
     lateinit var rvExchangeRate: RecyclerView
+    lateinit var progresssBar: ProgressBar
+
     lateinit var exchangeRateAdapter: ExchangeRateAdapter
     private var selectedItem: Currency? = null
 
@@ -38,6 +42,7 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
         val currencyDropDown = findViewById<AutoCompleteTextView>(R.id.currencyDropDown)
         inputAmount = findViewById(R.id.amount)
         rvExchangeRate = findViewById(R.id.rvExchangeRate)
+        progresssBar = findViewById(R.id.loadingProgress)
 
         currencyDropDown.onItemClickListener = this
 
@@ -66,7 +71,16 @@ class OpenExchangeActivity : AppCompatActivity(), AdapterView.OnItemClickListene
 
         openExchangeViewModel.uiState.observe(this) { state ->
             when (state) {
+                is OpenExchangeState.Loading -> {
+                    progresssBar.visibility = View.VISIBLE
+                    rvExchangeRate.visibility = View.GONE
+
+                }
                 is OpenExchangeState.GetCurrenciesSucces -> {
+
+                    progresssBar.visibility = View.GONE
+                    rvExchangeRate.visibility = View.VISIBLE
+
                     state.currencies.map {
                         listCurrencies.add(it)
                     }

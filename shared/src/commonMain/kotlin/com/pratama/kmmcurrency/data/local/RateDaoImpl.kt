@@ -16,21 +16,21 @@ class RateDaoImpl(private val currencyDatabase: CurrencyDatabase) : RateDao, Bas
     override val queries: AppDatabaseQueries
         get() = currencyDatabase.appDatabaseQueries
 
-    override fun getRates(): List<Rate> {
+    override suspend fun getRates(): List<Rate> {
         return queries.selectAllRate(::mapRate).executeAsList()
     }
 
     override fun insertRates(rates: List<Rate>) {
+        Logger.d { "insert rate ${rates.size}" }
         queries.transaction {
             rates.map {
-                Logger.d { "insert rate $it" }
                 queries.insertRate(it.symbol, it.rate)
             }
         }
     }
 
-    override fun getRateBySymbol(symbol: String): Rate {
-        return queries.selectRateBySymbol(symbol, ::mapRate).executeAsOne()
+    override fun getRateBySymbol(symbol: String): List<Rate> {
+        return queries.selectRateBySymbol(symbol, ::mapRate).executeAsList()
     }
 
     private fun mapRate(symbol: String, rate: Double): Rate {

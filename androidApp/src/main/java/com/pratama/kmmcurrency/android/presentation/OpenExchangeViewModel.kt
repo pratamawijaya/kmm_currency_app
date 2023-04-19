@@ -19,6 +19,8 @@ class OpenExchangeViewModel(
     sealed class OpenExchangeState {
         data class GetCurrenciesSucces(val currencies: List<Currency>) : OpenExchangeState()
         data class SuccessCalculateRate(val exchangRates: List<ExchangeRate>) : OpenExchangeState()
+
+        object Loading : OpenExchangeState()
         object Error : OpenExchangeState()
     }
 
@@ -27,6 +29,7 @@ class OpenExchangeViewModel(
 
     init {
         viewModelScope.launch {
+            _uiState.postValue(OpenExchangeState.Loading)
             val data = getCurrencies.invoke()
             getExchangeRates.invoke()
 
