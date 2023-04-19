@@ -70,7 +70,14 @@ val openExchangeModule = module {
     // usecase
     single { GetCurrencies(repo = get()) }
     single { GetExchangeRates(repo = get()) }
-    single { CalculateExchangeRate(repo = get(), rateDao = get(), decimalFormat = get()) }
+    single {
+        CalculateExchangeRate(
+            repo = get(),
+            rateDao = get(),
+            decimalFormat = get(),
+            currencyDao = get()
+        )
+    }
 }
 
 fun setupHttpClient(

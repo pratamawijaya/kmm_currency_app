@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.pratama.kmmcurrency.DecimalFormat
 import com.pratama.kmmcurrency.core.BaseUseCase
 import com.pratama.kmmcurrency.core.measureTimeMillis
+import com.pratama.kmmcurrency.data.local.dao.CurrencyDao
 import com.pratama.kmmcurrency.data.local.dao.RateDao
 import com.pratama.kmmcurrency.domain.entity.ExchangeRate
 import com.pratama.kmmcurrency.domain.entity.Rate
@@ -13,6 +14,7 @@ import kotlinx.datetime.Clock
 class CalculateExchangeRate(
     private val repo: OpenExchangeRepository,
     private val rateDao: RateDao,
+    private val currencyDao: CurrencyDao,
     private val decimalFormat: DecimalFormat
 ) :
     BaseUseCase<CalculateExchangeRate.Param, Result<List<ExchangeRate>>> {
@@ -35,7 +37,8 @@ class CalculateExchangeRate(
             rates?.map {
                 if (it.symbol != input.from) {
                     val rate = calculate(fromToUSD, it.symbol, input.amount)
-                    listExchangeRate.add(ExchangeRate(it.symbol, rate))
+                    val name = currencyDao.getCurrencyBySymbol(it.symbol)?.name
+                    listExchangeRate.add(ExchangeRate(it.symbol, name = name ?: "", rate))
                 }
             }
         })

@@ -6,32 +6,34 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pratama.kmmcurrency.android.R
+import com.pratama.kmmcurrency.android.databinding.ItemExchangeRateeBinding
 import com.pratama.kmmcurrency.domain.entity.ExchangeRate
 
 fun Double.round(decimalPrecision: Int): Double {
     return "%.0${decimalPrecision}f".format(this).toDouble()
 }
 
-class ExchangeRateAdapter(private val exchangeRates: List<ExchangeRate>) :
+class ExchangeRateAdapter(
+    private val exchangeRates: List<ExchangeRate>,
+    val amount: Double,
+    val labelFrom: String
+) :
     RecyclerView.Adapter<ExchangeRateAdapter.ExchangeRateViewHolder>() {
 
-    inner class ExchangeRateViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ExchangeRateViewHolder(private val binding: ItemExchangeRateeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bindView(exchangeRate: ExchangeRate) {
-            val tvRate = view.findViewById<TextView>(R.id.tvRate)
-            val tvSymbol = view.findViewById<TextView>(R.id.tvSymbol)
-
-            tvRate.text = "${exchangeRate.value}"
-            tvSymbol.text = exchangeRate.symbol
+            binding.tvLabelTo.text = exchangeRate.symbol
+            binding.tvLabelToName.text = exchangeRate.name
+            binding.tvLabelValue.text = "${exchangeRate.value}"
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExchangeRateViewHolder {
-        return ExchangeRateViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_exchange_rate, parent, false)
-        )
+        val binding = ItemExchangeRateeBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return ExchangeRateViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

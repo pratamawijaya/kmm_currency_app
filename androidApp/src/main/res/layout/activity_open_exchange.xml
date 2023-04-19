@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
+    android:padding="16dp"
     tools:context=".presentation.OpenExchangeActivity">
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputAmount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:hint="Amount">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/amount"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
